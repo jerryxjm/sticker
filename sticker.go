@@ -80,15 +80,11 @@ func (s *Sticker) Generate() error {
 	//尺寸
 	// img = resize.Resize(314, 314, img, resize.Lanczos3)
 
-	// jpg := image.NewRGBA(image.Rect(0, 0, 827, 1169))
 	jpg := image.NewRGBA(image.Rect(0, 0, s.Size.X, s.Size.Y))
 
 	fontRender(jpg, s.Font, s.LineTexts)
 
 	draw.Draw(jpg, img.Bounds().Add(image.Pt(0, 20)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
-	// draw.Draw(jpg, img.Bounds().Add(image.Pt(435, 150)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
-	// draw.Draw(jpg, img.Bounds().Add(image.Pt(60, 610)), img, img.Bounds().Min, draw.Src)  //截取图片的一部分
-	// draw.Draw(jpg, img.Bounds().Add(image.Pt(435, 610)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
 
 	png.Encode(file, jpg)
 	return nil
@@ -112,11 +108,7 @@ func fontRender(jpg *image.RGBA, stickerFont *Font, lineTexts []string) {
 	}
 
 	fg, bg := image.Black, image.White
-	//ruler := color.RGBA{0xdd, 0xdd, 0xdd, 0xff}
-	//if *wonb {
-	//	fg, bg = image.White, image.Black
-	//	ruler = color.RGBA{0x22, 0x22, 0x22, 0xff}
-	//}
+
 	draw.Draw(jpg, jpg.Bounds(), bg, image.ZP, draw.Src)
 	c := freetype.NewContext()
 	c.SetDPI(stickerFont.DPI)
@@ -132,12 +124,6 @@ func fontRender(jpg *image.RGBA, stickerFont *Font, lineTexts []string) {
 	case "full":
 		c.SetHinting(font.HintingFull)
 	}
-
-	//Draw the guidelines.
-	//for i := 0; i < 200; i++ {
-	//	jpg.Set(10, 10+i, ruler)
-	//	jpg.Set(10+i, 10, ruler)
-	//}
 
 	// Draw the text.
 	pt := freetype.Pt(20, 100+int(c.PointToFixed(stickerFont.Size)>>6))
