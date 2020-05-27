@@ -18,7 +18,7 @@ type Barcode struct {
 
 // NewBarcode 条形码图片
 func NewBarcode() *Barcode {
-	return &Barcode{PtX: 0, PtY: 20}
+	return &Barcode{PtX: 20, PtY: 20}
 }
 
 // CreateBarcode 创建
