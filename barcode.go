@@ -9,6 +9,18 @@ import (
 	"github.com/boombuler/barcode/code128"
 )
 
+// Barcode 条形码
+type Barcode struct {
+	Code string
+	PtX  int
+	PtY  int
+}
+
+// NewBarcode 条形码图片
+func NewBarcode() *Barcode {
+	return &Barcode{PtX: 0, PtY: 20}
+}
+
 // CreateBarcode 创建
 func CreateBarcode(filePath, code string) (string, error) {
 	if code == "" {
@@ -39,7 +51,7 @@ func CreateBarcode(filePath, code string) (string, error) {
 	defer file.Close()
 
 	// 设置图片像素大小
-	qrCode, err := barcode.Scale(cs, 350, 70)
+	qrCode, err := barcode.Scale(cs, 270, 70)
 	if err != nil {
 		return "", err
 	}

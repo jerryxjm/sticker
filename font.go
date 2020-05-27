@@ -8,6 +8,8 @@ type Font struct {
 	Spacing      float64
 	Whiteonblack bool
 	DPI          float64
+	PtX          int
+	PtY          int
 }
 
 // NewFont 字体信息实例
@@ -19,5 +21,7 @@ func NewFont() *Font {
 	font.Spacing = 1.5        // line spacing (e.g. 2 means double spaced)
 	font.Whiteonblack = false // white text on a black background
 	font.DPI = 72
+	font.PtX = 20
+	font.PtY = 100
 	return font
 }

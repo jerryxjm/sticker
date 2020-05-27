@@ -8,7 +8,7 @@ import (
 
 func main() {
 	s := sticker.New()
-	s.Barcode = "300684963555533158"
+	s.Barcode.Code = "300684963555533158"
 	s.SavePath = s.StartPath() + "sticker/"
 	s.SaveName = "A1204"
 	s.LineTexts = []string{
