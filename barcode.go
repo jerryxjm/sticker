@@ -11,18 +11,20 @@ import (
 
 // Barcode 条形码
 type Barcode struct {
-	Code string
-	PtX  int
-	PtY  int
+	Code   string
+	PtX    int
+	PtY    int
+	Width  int
+	Height int
 }
 
 // NewBarcode 条形码图片
 func NewBarcode() *Barcode {
-	return &Barcode{PtX: 20, PtY: 20}
+	return &Barcode{PtX: 20, PtY: 20, Width: 270, Height: 70}
 }
 
 // CreateBarcode 创建
-func CreateBarcode(filePath, code string) (string, error) {
+func CreateBarcode(filePath, code string, width, height int) (string, error) {
 	if code == "" {
 		return "", errors.New("code 不能为空")
 		// code = "300684963555533158"
@@ -51,7 +53,7 @@ func CreateBarcode(filePath, code string) (string, error) {
 	defer file.Close()
 
 	// 设置图片像素大小
-	qrCode, err := barcode.Scale(cs, 270, 70)
+	qrCode, err := barcode.Scale(cs, width, height)
 	if err != nil {
 		return "", err
 	}
