@@ -1,7 +1,6 @@
 package sticker
 
 import (
-	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
