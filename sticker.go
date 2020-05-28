@@ -31,7 +31,6 @@ func New() *Sticker {
 	var err error
 	s.startPath, err = os.Getwd()
 	if err != nil {
-		fmt.Println(err)
 		return nil
 	}
 	s.startPath = s.startPath + "/"
@@ -66,14 +65,13 @@ func (s *Sticker) Generate() error {
 
 	file, err := os.Create(s.SavePath + s.SaveName + ".jpg")
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	defer file.Close()
 
 	file1, err := os.Open(barcodeFileFullPath)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	defer file1.Close()
 	img, _ := png.Decode(file1)
