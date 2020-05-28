@@ -41,7 +41,7 @@ func New() *Sticker {
 // Generate 生成
 func (s *Sticker) Generate() error {
 	// 生成条形码
-	barcodeFileFullPath, err := CreateBarcode(s.startPath+"barcode/", s.Barcode.Code)
+	barcodeFileFullPath, err := CreateBarcode(s.startPath+"barcode/", s.Barcode.Code, s.Barcode.Width, s.Barcode.Height)
 	if err != nil {
 		return err
 	}
