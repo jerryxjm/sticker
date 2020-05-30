@@ -10,6 +10,7 @@ type Font struct {
 	DPI          float64
 	PtX          int
 	PtY          int
+	LineTexts    []string
 }
 
 // NewFont 字体信息实例
