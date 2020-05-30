@@ -2,6 +2,7 @@ package sticker
 
 import (
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 	"io/ioutil"
@@ -18,15 +19,14 @@ type Sticker struct {
 	startPath string
 	SavePath  string
 	SaveName  string
-	LineTexts []string
 	Size      *Size
-	Font      *Font
+	Fonts     []*Font
 	Barcode   *Barcode
 }
 
 // New 贴纸
 func New() *Sticker {
-	s := &Sticker{Size: NewSize(), Font: NewFont(), Barcode: NewBarcode()}
+	s := &Sticker{Size: NewSize(), Fonts: []*Font{}, Barcode: NewBarcode()}
 	var err error
 	s.startPath, err = os.Getwd()
 	if err != nil {
@@ -75,13 +75,21 @@ func (s *Sticker) Generate() error {
 	defer file1.Close()
 	img, _ := png.Decode(file1)
 	//尺寸
-	// img = resize.Resize(314, 314, img, resize.Lanczos3)
+	// img = resize.Resize(314, 70, img, resize.Lanczos3)
 
+	// jpg := image.NewRGBA(image.Rect(0, 0, 827, 1169))
 	jpg := image.NewRGBA(image.Rect(0, 0, s.Size.X, s.Size.Y))
+	white := color.RGBA{255, 255, 255, 255}
+	draw.Draw(jpg, jpg.Bounds(), &image.Uniform{white}, image.ZP, draw.Src) //画上白色背景
 
-	fontRender(jpg, s.Font, s.LineTexts)
+	for _, item := range s.Fonts {
+		fontRender(jpg, item)
+	}
 
 	draw.Draw(jpg, img.Bounds().Add(image.Pt(s.Barcode.PtX, s.Barcode.PtY)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
+	// draw.Draw(jpg, img.Bounds().Add(image.Pt(435, 150)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
+	// draw.Draw(jpg, img.Bounds().Add(image.Pt(60, 610)), img, img.Bounds().Min, draw.Src)  //截取图片的一部分
+	// draw.Draw(jpg, img.Bounds().Add(image.Pt(435, 610)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
 
 	png.Encode(file, jpg)
 	return nil
@@ -92,7 +100,7 @@ func (s *Sticker) StartPath() string {
 	return s.startPath
 }
 
-func fontRender(jpg *image.RGBA, stickerFont *Font, lineTexts []string) {
+func fontRender(jpg *image.RGBA, stickerFont *Font) {
 	fontBytes, err := ioutil.ReadFile(stickerFont.FilePath)
 	if err != nil {
 		log.Println(err)
@@ -106,12 +114,14 @@ func fontRender(jpg *image.RGBA, stickerFont *Font, lineTexts []string) {
 
 	fg, bg := image.Black, image.White
 
-	draw.Draw(jpg, jpg.Bounds(), bg, image.ZP, draw.Src)
+	bounds := jpg.Bounds()
+
+	draw.Draw(jpg, image.Rect(stickerFont.PtX, stickerFont.PtY, bounds.Max.X, bounds.Max.Y), bg, image.ZP, draw.Src)
 	c := freetype.NewContext()
 	c.SetDPI(stickerFont.DPI)
 	c.SetFont(f)
 	c.SetFontSize(stickerFont.Size)
-	c.SetClip(jpg.Bounds())
+	c.SetClip(image.Rect(stickerFont.PtX, stickerFont.PtY, bounds.Max.X, bounds.Max.Y))
 	c.SetDst(jpg)
 	c.SetSrc(fg)
 
@@ -124,7 +134,7 @@ func fontRender(jpg *image.RGBA, stickerFont *Font, lineTexts []string) {
 
 	// Draw the text.
 	pt := freetype.Pt(stickerFont.PtX, stickerFont.PtY+int(c.PointToFixed(stickerFont.Size)>>6))
-	for _, s := range lineTexts {
+	for _, s := range stickerFont.LineTexts {
 		_, err = c.DrawString(s, pt)
 		if err != nil {
 			log.Println(err)
