@@ -92,6 +92,7 @@ func (s *Sticker) Generate() error {
 	// draw.Draw(jpg, img.Bounds().Add(image.Pt(435, 610)), img, img.Bounds().Min, draw.Src) //截取图片的一部分
 
 	png.Encode(file, jpg)
+	os.Remove(barcodeFileFullPath)
 	return nil
 }
 
